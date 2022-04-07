@@ -11,7 +11,7 @@ const resolvers = {
     },
   },
   Mutation: {
-    createUser: async (parent, args, context) => {
+    addUser: async (parent, args, context) => {
       const user = await User.create(args);
       const token = signToken(user);
 
@@ -35,15 +35,15 @@ const resolvers = {
       return { token, user };
     },
 
-    addBook: async (parent, args, context) => {
+    saveBook: async (parent, args, context) => {
       try {
         if (context.user) {
-          const book = await User.findOneAndUpdate(
+          const user = await User.findOneAndUpdate(
             { _id: context.user._id },
             { $addToSet: { savedBooks: { ...args } } },
             { new: true, runValidators: true }
           );
-          return book;
+          return user;
         }
         throw new AuthenticationError(
           "Hol' on thar pardner, you need to be logged in to do that!"
@@ -56,12 +56,12 @@ const resolvers = {
     removeBook: async (parent, args, args) => {
       try {
         if (context.user) {
-          const book = await User.findOneAndUpdate(
+          const user = await User.findOneAndUpdate(
             { _id: user._id },
             { $pull: { savedBooks: { bookId: params.bookId } } },
             { new: true }
-          );
-          return book;
+          ); 
+          return user;
         }
         throw new AuthenticationError(
           "Hol' on thar pardner, you need to be logged in to do that!"
