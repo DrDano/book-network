@@ -5,7 +5,7 @@ const path = require("path");
 const db = require("./config/connection");
 const { typeDefs, resolvers } = require("./schemas");
 // ###############################
-const routes = require("./routes");
+// const routes = require("./routes");
 // ###############################
 
 const app = express();
