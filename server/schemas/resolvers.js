@@ -4,17 +4,27 @@ const { signToken } = require("../utils/auth");
 
 const resolvers = {
   Query: {
-    me: async (parent, args , context) => {
-      if (context.user) {
-        return await User.findOne({ _id: context.user._id })
-        .select("-__v -password")
-        .populate("savedBooks");
+    me: async (parent, args, context) => {
+      if (args) {
+        const userData = await User.findOne({ _id: args.id })
+          .select("-__v -password")
+          .populate("savedBooks");
+        
+        console.log(userData || "no user data")
+        return userData;
       }
+      console.log("NO USER DATA in CONTEXT")
       throw new AuthenticationError("You are not logged in");
     },
+    
+    users: async (parent, args, context) => {
+      const users = await User.find()
+
+      return users
+    }
   },
   Mutation: {
-    addUser: async (parent, args, context) => {
+    addUser: async (parent, args) => {
       const user = await User.create(args);
       const token = signToken(user);
 
@@ -23,6 +33,7 @@ const resolvers = {
 
     login: async (parent, { email, password }, context) => {
       const user = await User.findOne({ email });
+      console.log(user)
 
       if (!user) {
         throw new AuthenticationError("Username and/or password was invalid.");
@@ -63,7 +74,7 @@ const resolvers = {
             { _id: user._id },
             { $pull: { savedBooks: { bookId: params.bookId } } },
             { new: true }
-          ); 
+          );
           return user;
         }
         throw new AuthenticationError(
@@ -73,3 +84,5 @@ const resolvers = {
     },
   },
 };
+
+module.exports = resolvers;
