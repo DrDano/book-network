@@ -50,14 +50,17 @@ const resolvers = {
     },
 
     saveBook: async (parent, args, context) => {
+      console.log(context)
       try {
-        if (context.user) {
-          const user = await User.findOneAndUpdate(
+        if (context) {
+          const book = await book.create(args);
+
+          const user = await User.findByIdAndUpdate(
             { _id: context.user._id },
-            { $addToSet: { savedBooks: { ...args } } },
+            { $push: { savedBooks: book.bookId } },
             { new: true, runValidators: true }
           );
-          return user;
+          return book;
         }
         throw new AuthenticationError(
           "Hol' on thar pardner, you need to be logged in to do that!"
