@@ -9,8 +9,6 @@ const resolvers = {
         const userData = await User.findOne({ _id: args.id })
           .select("-__v -password")
           .populate("savedBooks");
-        
-        console.log(userData || "no user data")
         return userData;
       }
       console.log("NO USER DATA in CONTEXT")
@@ -33,7 +31,6 @@ const resolvers = {
 
     login: async (parent, { email, password }, context) => {
       const user = await User.findOne({ email });
-      console.log(user)
 
       if (!user) {
         throw new AuthenticationError("Username and/or password was invalid.");
@@ -50,17 +47,15 @@ const resolvers = {
     },
 
     saveBook: async (parent, args, context) => {
-      console.log(context)
       try {
         if (context) {
-          const book = await book.create(args);
 
           const user = await User.findByIdAndUpdate(
             { _id: context.user._id },
-            { $push: { savedBooks: book.bookId } },
+            { $push: { savedBooks: args } },
             { new: true, runValidators: true }
           );
-          return book;
+          return user;
         }
         throw new AuthenticationError(
           "Hol' on thar pardner, you need to be logged in to do that!"
@@ -74,8 +69,8 @@ const resolvers = {
       try {
         if (context.user) {
           const user = await User.findOneAndUpdate(
-            { _id: user._id },
-            { $pull: { savedBooks: { bookId: params.bookId } } },
+            { _id: context.user._id },
+            { $pull: { savedBooks: { bookId: args.bookId } } },
             { new: true }
           );
           return user;

@@ -23,7 +23,6 @@ const authLink = setContext((_, { headers, ...context }) => {
       ...headers,
       authorization: token ? `Bearer ${token}` : '',
     },
-    ...context,
   };
 });
 
@@ -31,8 +30,6 @@ const client = new ApolloClient({
   link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
 });
-
-console.log(client)
 
 function App() {
   return (

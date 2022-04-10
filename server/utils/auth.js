@@ -12,8 +12,7 @@ module.exports = {
 
   authMiddleware: function({req}) {
     let token = req.body.token || req.query.token || req.headers.authorization;
-    console.log(req.headers)
-    // request does not contain token
+    console.log("headers", req.headers)
   
     // separate "Bearer" from "<tokenvalue>"
     if (req.headers.authorization) {
@@ -24,7 +23,7 @@ module.exports = {
     }
 
     if (!token) {
-      console.log("no token")
+      console.log("no token in authMiddleware")
       return req;
     }
   

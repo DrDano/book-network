@@ -13,7 +13,6 @@ query meQuery($id: ID!) {
       authors
       description
       image
-      link
     }
   }
 }

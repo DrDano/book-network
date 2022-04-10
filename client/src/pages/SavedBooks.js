@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import {
   Jumbotron,
@@ -15,23 +15,17 @@ import { REMOVE_BOOK } from "../utils/mutations";
 
 const SavedBooks = () => {
   const userProfile = Auth.getProfile();
+  const token = Auth.loggedIn() ? Auth.getToken() : null;
 
-  const {loading, data} = useQuery(GET_ME, {
+  const [removeBook] = useMutation(REMOVE_BOOK);
+
+  const { loading, data } = useQuery(GET_ME, {
     variables: { id: userProfile.data._id },
   });
 
-  const { removeBook } = useMutation(REMOVE_BOOK);
-
-  // try {
-  //   // const token = Auth.loggedIn() ? Auth.getToken() : null;
-
-  //   // if (!token) {
-  //   //   return false;
-  //   // }
-
-  // } catch (err) {
-  //   console.error(err);
-  // }
+  if (!token) {
+    return false;
+  }
 
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
@@ -42,7 +36,10 @@ const SavedBooks = () => {
     }
 
     try {
-      const user = await removeBook({ context: userProfile._id });
+
+      await removeBook({ 
+        variables: {bookId: bookId}
+      });
       // setUserData({...user});
       // upon success, remove book's id from localStorage
       removeBookId(bookId);
@@ -54,7 +51,7 @@ const SavedBooks = () => {
   if (loading) {
     return <h2>LOADING...</h2>;
   }
-  console.log(data)
+
   return (
     <>
       <Jumbotron fluid className="text-light bg-dark">
@@ -64,7 +61,7 @@ const SavedBooks = () => {
       </Jumbotron>
       <Container>
         <h2>
-          {data.me.savedBooks.length
+          {data.me.bookCount > 0
             ? `Viewing ${data.me.savedBooks.length} saved ${
                 data.me.savedBooks.length === 1 ? "book" : "books"
               }:`

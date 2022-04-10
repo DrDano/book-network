@@ -24,7 +24,6 @@ const startServer = async () => {
   console.log(
     `Use GraphQL queries and mutations at http://localhost:${PORT}${server.graphqlPath}`
   );
-  console.log()
 };
 
 startServer();
