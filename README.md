@@ -1,6 +1,6 @@
-# inter-App
+# Book Network
 
-Interactive social networking API designed for any frontend platform. Ready, set, inter-App!
+An interactive bookshelf build on graphql.
 
 ![](https://img.shields.io/badge/javascript-100-yellow?logo=javascript)
 ![](https://img.shields.io/badge/graphql-dep-purple?logo=graphql)
